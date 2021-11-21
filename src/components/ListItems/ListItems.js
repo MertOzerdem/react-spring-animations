@@ -1,5 +1,5 @@
 import { useSpring, animated } from "react-spring";
-import { useDrag } from '@use-gesture/react'
+import { useDrag } from "@use-gesture/react";
 import { useState, useRef } from "react";
 import ListItemStyles from "./ListItems.module.css";
 
@@ -63,13 +63,58 @@ const ListItems = (props) => {
 	// 	to: { rotateZ: 180, x: 1000, y: 500 }
 	// });
 
-	const [{ x, y }, api] = useSpring(() => ({ x: 0, y: 0, config: { friction: 4, tension: 10, color: 'red' } }))
+	const right = {
+		bg: `linear-gradient(120deg, #96fbc4 0%, #f9f586 100%)`,
+		justifySelf: "start",
+	};
 
-	// Set the drag hook and define component movement based on gesture data
-	const bind = useDrag(({ down, movement: [mx, my] }) => {
+	const [aa, api] = useSpring(() => ({
+		x: 0,
+		y: 0,
+		config: { friction: 6, tension: 10, color: "red" },
+		scale: 1,
+		...right,
+	}));
+	const { x, y } = aa;
+
+	// const [bindFunction, setBindFunction] = useState({});
+	// if (props.action === "Wobble") {
+	// 	setBindFunction({
+	// 		handler: ({ down, offset: [mx, my], tap }) => {
+	// 			if (tap) {
+	// 				console.log("tap", tap);
+	// 			}
+	// 			api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down });
+	// 		},
+	// 		config: { from: () => [x.get(), y.get()] },
+	// 	})
+	// } else if (props.action === "Stick") {
+	// 	setBindFunction({
+	// 		handler: ({ down, offset: [ox, oy] }) => api.start({ x: ox, y: oy, immediate: down }),
+	// 		config: {
+	// 			bounds: { left: -300, right: 300, top: -250, bottom: 250 },
+	// 		},
+	// 	})
+	// }
+
+	// const bind = useDrag(bindFunction.handler, bindFunction.config);
+
+	const bind = useDrag(({ down, movement: [mx, my], tap }) => {
+		if(tap) {
+			console.log('tap', tap)
+		}
 		api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down })
-	})
+	},
+		// { axis: 'x' },
+		// // { bounds: { left: -300, right: 300, top: -250, bottom: 250 } },
+		{ pointer: { buttons: [1, 4], capture: false }, filterTaps: true, delay: 10  }
+	)
 
+	// const bind = useDrag(
+	// 	({ down, offset: [ox] }) => api.start({ x: down ? ox : 0, immediate: down, config: { duration: 3000 } }),
+	// 	{ from: () => [x.get(), 0] }
+	//   )
+	
 	return (
 		<div>
 			{/* <animated.h1 style={animation}>Hello World</animated.h1>
@@ -90,7 +135,7 @@ const ListItems = (props) => {
 				}}
 			/> */}
 
-			<animated.div {...bind()} className={ListItemStyles.dragItem} style={{ x, y, touchAction: 'none' }} />
+			<animated.div {...bind()} className={ListItemStyles.dragItem} style={{ x, y, touchAction: "none" }} />
 		</div>
 	);
 };

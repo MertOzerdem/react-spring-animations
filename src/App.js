@@ -5,18 +5,18 @@ import Navbar from './components/Navbar/Navbar'
 import logo from './logo.png'
 
 function App() {
-  const [action, setAction] = useState('Wobble');
+  const [action, setAction] = useState('drag');
 
   const setSquareAction = (action) => {
     setAction(action.target.value);
-    // console.log("action: ", action.target.value);
   }
 
   return (
     <div className="App">
       <Navbar logo={logo}/>
-      <button value="Wobble" onClick={setSquareAction}>Wobble Around</button>
-      <button value="Stick" onClick={setSquareAction}>Stay On</button>
+      <button value="drag" onClick={setSquareAction}>Wobble Around</button>
+      <button value="offset" onClick={setSquareAction}>Stay On</button>
+      <button value="stick" onClick={setSquareAction}>Stick On Boundary</button>
       <ListItems action={action} />
     </div>
   );

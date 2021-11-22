@@ -8,8 +8,8 @@ function App() {
   const [action, setAction] = useState('Wobble');
 
   const setSquareAction = (action) => {
-    setAction(action);
-    console.log("action: ", action.target.value);
+    setAction(action.target.value);
+    // console.log("action: ", action.target.value);
   }
 
   return (

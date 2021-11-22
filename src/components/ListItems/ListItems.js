@@ -2,6 +2,7 @@ import { useSpring, animated } from "react-spring";
 import { useDrag } from "@use-gesture/react";
 import { useState, useRef } from "react";
 import ListItemStyles from "./ListItems.module.css";
+import ListItem from "../ListItem/ListItem";
 
 const ListItems = (props) => {
 	// const config = { duration: 2000 };
@@ -77,44 +78,33 @@ const ListItems = (props) => {
 	}));
 	const { x, y } = aa;
 
-	// const [bindFunction, setBindFunction] = useState({});
-	// if (props.action === "Wobble") {
-	// 	setBindFunction({
-	// 		handler: ({ down, offset: [mx, my], tap }) => {
-	// 			if (tap) {
-	// 				console.log("tap", tap);
-	// 			}
-	// 			api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down });
-	// 		},
-	// 		config: { from: () => [x.get(), y.get()] },
-	// 	})
-	// } else if (props.action === "Stick") {
-	// 	setBindFunction({
-	// 		handler: ({ down, offset: [ox, oy] }) => api.start({ x: ox, y: oy, immediate: down }),
-	// 		config: {
-	// 			bounds: { left: -300, right: 300, top: -250, bottom: 250 },
-	// 		},
-	// 	})
-	// }
-
-	// const bind = useDrag(bindFunction.handler, bindFunction.config);
-
-	const bind = useDrag(({ down, movement: [mx, my], tap }) => {
+	const dragBindFunction = ({ down, movement: [mx, my], tap }) => {
 		if(tap) {
 			console.log('tap', tap)
 		}
 		api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down })
-	},
-		// { axis: 'x' },
-		// // { bounds: { left: -300, right: 300, top: -250, bottom: 250 } },
-		{ pointer: { buttons: [1, 4], capture: false }, filterTaps: true, delay: 10  }
-	)
+	}
+	const dragBindConfig = { pointer: { buttons: [1, 4], capture: false }, filterTaps: true, delay: 10  }
+
+	const offsetBindFunction = ({ down, offset: [ox] }) => api.start({ x: down ? ox : 0, immediate: down, config: { duration: 3000 } })
+	const offsetBindConfig = { from: () => [x.get(), 0] }
 
 	// const bind = useDrag(
 	// 	({ down, offset: [ox] }) => api.start({ x: down ? ox : 0, immediate: down, config: { duration: 3000 } }),
 	// 	{ from: () => [x.get(), 0] }
-	//   )
+	// );
 	
+	// const bind = useDrag(({ down, movement: [mx, my], tap }) => {
+	// 	if(tap) {
+	// 		console.log('tap', tap)
+	// 	}
+	// 	api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down })
+	// },
+	// 	// { axis: 'x' },
+	// 	// // { bounds: { left: -300, right: 300, top: -250, bottom: 250 } },
+	// 	{ pointer: { buttons: [1, 4], capture: false }, filterTaps: true, delay: 10  }
+	// )
+
 	return (
 		<div>
 			{/* <animated.h1 style={animation}>Hello World</animated.h1>
@@ -135,7 +125,14 @@ const ListItems = (props) => {
 				}}
 			/> */}
 
-			<animated.div {...bind()} className={ListItemStyles.dragItem} style={{ x, y, touchAction: "none" }} />
+			{/* <animated.div {...bind()} className={ListItemStyles.dragItem} style={{ x, y, touchAction: "none" }} /> */}
+			{console.log('action:', props.action)}
+			{/* {props.action === "Wobble" ? 
+			<ListItem className={ListItemStyles.dragItem} dragBindFunction={dragBindFunction} dragBindConfig={dragBindConfig} style={{ x, y, touchAction: "none" }}></ListItem> :
+			<ListItem className={ListItemStyles.dragItem} dragBindFunction={offsetBindFunction} dragBindConfig={offsetBindConfig} style={{ x, y, touchAction: "none" }}></ListItem>}
+			 */}
+			<ListItem className={ListItemStyles.dragItem} dragBindFunction={props.action === "Wobble" ? dragBindFunction : offsetBindFunction} dragBindConfig={props.action === "Wobble" ? dragBindConfig : offsetBindConfig} style={{ x, y, touchAction: "none" }}></ListItem>
+			
 		</div>
 	);
 };

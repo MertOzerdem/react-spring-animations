@@ -7,27 +7,28 @@ const ListItems = (props) => {
 		bg: `linear-gradient(120deg, #96fbc4 0%, #f9f586 100%)`,
 		justifySelf: "start",
 	};
-	const [{ x, y }, api] = useSpring(() => ({
+	const [{ x, y, color }, api] = useSpring(() => ({
 		x: 0,
 		y: 0,
-		config: { friction: 6, tension: 10, color: "red" },
+		color: "red",
+		config: { friction: 4, tension: 10 },
 		scale: 1,
 		...right,
 	}));
 	const animationSets = {
 		drag: {
-			bindFunction: ({ down, movement: [mx, my], tap }) => {
+			bindFunction: ({ down, movement: [mx, my], tap}) => {
 				if (tap) {
 					console.log("tap", tap);
 				}
 				// api.set({ x: down ? mx : 0, y: down ? my : 0, immediate: down })
+				// api.update({config: { friction: 4, tension: 10, color: "red" }});
 				api.start({ x: down ? mx : 0, y: down ? my : 0, immediate: down });
 			},
 			bindConfig: { pointer: { buttons: [1, 4], capture: false }, filterTaps: true, delay: 10 },
 		},
 		offset: {
 			bindFunction: ({ down, offset: [ox] }) => {
-				// api.set({ x: down ? ox : 0, immediate: down, config: { duration: 1500 } })
 				api.start({ x: down ? ox : 0, immediate: down, config: { duration: 1500 } })
 			},
 			bindConfig: { from: () => [x.get(), 0] },
@@ -44,7 +45,7 @@ const ListItems = (props) => {
 				className={ListItemStyles.dragItem}
 				dragBindFunction={animationSets[props.action].bindFunction}
 				dragBindConfig={animationSets[props.action].bindConfig}
-				style={{ x, y, touchAction: "none" }}
+				style={{ x, y, color, touchAction: "none" }}
 			></ListItem>
 		</div>
 	);
